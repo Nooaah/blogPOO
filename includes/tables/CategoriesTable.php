@@ -11,45 +11,66 @@ class CategoriesTable
         $this->db = $db;
     }
 
+    //Create Categorie
+    public function create(Categorie $categorie)
+    {
+        $sth = $this->db->prepare("INSERT INTO {$this->table} (name) VALUES (?)");
+        $sth->execute(array($cat->getName()));
+
+        if (!$sth) {
+            throw new Exception("Error during creation with the table {$this->table}");
+        }
+    }
+
+    //Retrieve Categorie
     public function all(): array
     {
         $sth = $this->db->query("SELECT * FROM {$this->table}");
         return $sth->fetchAll();
     }
-
     public function get(int $id)
     {
         $sth = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
         $sth->execute(array($id));
         return $sth->fetch();
     }
-
-    public function create(Post $post)
+    public function get_categorie_by_id($id)
     {
-        $sth = $this->db->prepare("INSERT INTO {$this->table} (title, content) VALUES (:title, :content)");
-        $sth->bindParam(':title', $post->getTitle());
-        $sth->bindParam(':content', $post->getContent());
-        $result = $sth->execute();
-
-        if (!$result) {
-            throw new Exception("Error during creation with the table {$this->table}");
-        }
+        global $db;
+        $ins = $db->prepare('SELECT * FROM categories WHERE id = ?');
+        $ins->execute(array($id));
+        $ins = $ins->fetch();
+        return $ins['name'];
+    }
+    public function get_categorie_id_by_name($name)
+    {
+        global $db;
+        $ins = $db->prepare('SELECT * FROM categories WHERE name = ?');
+        $ins->execute(array($name));
+        $ins = $ins->fetch();
+        return $ins['id']; 
     }
 
-    public function update(Post $post): void
+    //Update Categorie
+    public function update(Categorie $categorie): void
     {
-        $sth = $this->db->prepare("UPDATE {$this->table} SET title = ? AND content = ? WHERE id = ?");
-        $sth->execute(array($post->getTitle(), $post->getContent()));
-        $result = $sth->execute();
+        $sth = $this->db->prepare("UPDATE {$this->table} SET name = ? WHERE id = ?");
+        $sth->execute(array($categorie->getName(), $categorie->getId()));
 
-        if (!$result) {
+        if (!$sth) {
             throw new Exception("Error during updating with the table {$this->table}");
         }
     }
 
-    public function delete(int $id): void
+    //Delete Categorie
+    public function delete(Categorie $categorie): void
     {
-        // todo
+        $sth = $this->db->prepare("DELETE FROM {$this->table} WHERE id = ?");
+        $sth->execute(array($categorie->getId()));
+
+        if (!$sth) {
+            throw new Exception("Error during updating with the table {$this->table}");
+        }
     }
 
 }

@@ -4,16 +4,27 @@ require_once '../includes/config.php';
 
 $pt = new PostTable();
 
+if (empty($_GET['cat']))
+{
+    $posts = $pt->all();
+}
+else
+{
+    $posts = $pt->getCat(intval($_GET['cat']));
+}
+
+$cat = new CategoriesTable();
+$categories = $cat->all();
+
+
 if (isset($_GET['del']))
 {
     $getid = intval($_GET['del']);
     $post = new Post();
-    $post->setID($getid);
+    $post->setId($getid);
     $pt->delete($post);
     header('location:index.php');
 }
-
-$posts = $pt->all();
 
 
 if (isset($_POST['login'])) {
@@ -58,12 +69,7 @@ if (isset($_POST['login'])) {
     <link rel="icon" type="image/png" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRCRvu70-oIYJSrEyR7HO64_TmcTr26UhsHB34a2GWZGERfKT2L">
     <style>
         *
-        {￼
-￼￼￼￼
-Depuis quelque temps, et plus particulièrement depuis l’arrivée de Satya Nadella à la tête de l’empire, il est de bon ton d’affirmer que Microsoft est (re)devenu cool. Si le passage à Windows 10 ne s’est quand même pas fait sans douleur pour de nombreux utilisateurs, la pléthore de services développés ces dernières années et l’ouverture de la firme de Redmond à ceux de la concurrence (y compris Linux !) a remis le géant au cœur du jeu et les critiques sont beaucoup moins vives qu’à une certaine époque.
-
-Mais on a parfois un peu tendance à oublier que Microsoft, c’est aussi beaucoup de Recherche et Développement dans le hardware et une gamme de produits qui s’élargit à un rythme régulier. Alors que Xbox et Hololens sont les stars de la marque, et que Microsoft n’a pas laissé un souvenir inoubliable avec Windows Phone, d’autres produits émergent, et ceux présentés la semaine dernière semblent avoir particulièrement retenu l’attention des observateurs, des plus geeks aux plus « corporate ».
-
+        {
             scroll-behavior: smooth;
         }
         .modal-dialog.modal-notify .modal-body {
@@ -203,12 +209,9 @@ aria-hidden="true">
           aria-haspopup="true" aria-expanded="false">Catégories</a>
         <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
             <a class="dropdown-item" href="index.php">Toutes les catégories</a>
-        <?php
-        /*$categories = get_all_categories();
-        foreach($categories as $categorie):
-        ?>
+        <?php foreach($categories as $categorie): ?>
            <a class="dropdown-item" href="index.php?cat=<?= $categorie['id'] ?>"><?= $categorie['name'] ?></a>
-        <?php endforeach; */ ?>
+        <?php endforeach; ?>
         </div>
       </li>
 
@@ -241,9 +244,6 @@ aria-hidden="true">
 
     <form class="form-inline" action="" method="POST">
         <div class="md-form my-0">
-        <!--
-            <input class="form-control mr-sm-2" type="text" id="rechercher" name="rechercher" placeholder="Rechercher" aria-label="Rechercher">
-        -->
         <?php
         if (isset($_SESSION['id']))
         {
@@ -266,9 +266,6 @@ aria-hidden="true">
 
 
 
-
-
-
     <div class="container mt-5">
         <section id="articles">
             <div class="row">
@@ -277,7 +274,10 @@ aria-hidden="true">
                 </div>
             </div>
             <hr style="margin-top:-30px;">
+<?php
 
+
+?>
             <? foreach($posts as $post): ?>
 
             <div class="row mt-5">
@@ -297,7 +297,7 @@ aria-hidden="true">
 
             <div class="col-md-8">
                     <p style="font-size:19px;" class="mt-2">
-                        <div class="date" style="font-size:13px;"><b><b><?= retrieve_categorie_by_id($post['categorie']) ?> / </b></b>Le <?= date('d/m/Y à H:i', $post['date']); ?></div>
+                        <div class="date" style="font-size:13px;"><b><b><?= $cat->get_categorie_by_id($post['categorie']) ?> / </b></b>Le <?= date('d/m/Y à H:i', $post['date']); ?></div>
                         <h2 class="mb-3"><a style="color:black;" href="article.php?id=<?= $post['id'] ?>"><b><b><?= $post['title'] ?></b></b></a></h2>
                         <?php
                         $text = $post['content'];
@@ -317,41 +317,6 @@ aria-hidden="true">
 
 
 
-<!-- Central Modal Medium Danger -->
-<div class="modal fade" id="centralModalDanger" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-  aria-hidden="true">
-  <div class="modal-dialog modal-notify modal-danger" role="document">
-    <!--Content-->
-    <div class="modal-content">
-      <!--Header-->
-      <div class="modal-header">
-        <p class="heading lead">Supprimer</p>
-
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true" class="white-text">&times;</span>
-        </button>
-      </div>
-
-      <!--Body-->
-      <div class="modal-body">
-        <div class="text-center">
-          <i class="far fa-times-circle fa-4x mb-3 animated rotateIn mt-4"></i>
-          <p class="mt-3">Êtes vous sûr de vouloir supprimer ce post ?</p>
-        </div>
-      </div>
-
-      <!--Footer-->
-      <div class="modal-footer justify-content-center">
-        <a id="btnHrefSupprimer" href="" type="button" class="btn btn-danger">Supprimer</a>
-        <a type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Non merci</a>
-      </div>
-    </div>
-    <!--/.Content-->
-  </div>
-</div>
-<!-- Central Modal Medium Danger-->
-
-
 
 <!-- Footer -->
 <footer class="page-footer font-small elegant-color mt-5 pt-2">
@@ -369,8 +334,6 @@ aria-hidden="true">
 
 
 
-
-
     <!-- /FIN DU PROJET-->
 
     <!-- JQuery -->
@@ -382,17 +345,8 @@ aria-hidden="true">
         src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <!-- MDB core JavaScript -->
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.8.8/js/mdb.js"></script>
-    <!-- VueJS
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.js"></script>-->
-    <!-- Axios -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
-    <!-- SCRIPTS
-    <script src="js/app.js"></script>
-    <script src="js/ajax.js"></script>
-    <script src="js/script.js"></script>
+
 -->
 
 </body>
 </html>
-
-

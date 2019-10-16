@@ -28,7 +28,6 @@ class PostTable
         $sth = $this->db->query("SELECT * FROM {$this->table} ORDER BY id DESC");
         return $sth->fetchAll();
     }
-
     public function get(int $id): Post
     {
         $sth = $this->db->prepare("SELECT * FROM {$this->table} WHERE id = ?");
@@ -46,6 +45,12 @@ class PostTable
         $pt->setViews($sth['views']);
 
         return $pt;
+    }
+    public function getCat(int $id)
+    {
+        $sth = $this->db->prepare("SELECT * FROM {$this->table} WHERE categorie = ? ORDER BY id DESC");
+        $sth->execute(array($id));
+        return $sth->fetchAll();
     }
 
     //Update post
@@ -67,6 +72,17 @@ class PostTable
 
         if (!$sth) {
             throw new Exception("Error during deleting with the table {$this->table}");
+        }
+    }
+
+    //Ajoute +1 pour les vues
+    public function add_view(Post $post)
+    {
+        $sth = $this->db->prepare("UPDATE {$this->table} SET views = views + 1 WHERE id = ?");
+        $sth->execute(array($post->getId()));
+
+        if (!$sth) {
+            throw new Exception("Error during adding view with the table {$this->table}");
         }
     }
 

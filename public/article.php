@@ -9,19 +9,18 @@ if (isset($_GET['id']))
     $pt = new PostTable();
     $post = $pt->get($getid);
 
-    add_view($getid);
+    $pt->add_view($post);
     
-
     $us = new UsersTable();
     $user = $us->get($post->getIdUser());
-
-    $cat = new CategoriesTable();
-    $categorie = $cat->get($post->getCategorie());
 }
 else
 {
     header('location:index.php');
 }
+
+$cat = new CategoriesTable();
+$categories = $cat->all();
 
 if (isset($_POST['commentaire']))
 {
@@ -90,6 +89,7 @@ if (isset($_POST['login'])) {
     </style>
 </head>
 <body>
+
 
 
 <!-- MODALE CONNEXION -->
@@ -166,13 +166,10 @@ if (isset($_POST['login'])) {
         <a class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown"
           aria-haspopup="true" aria-expanded="false">Catégories</a>
         <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
-          <a class="dropdown-item" href="index.php">Toutes les catégories</a>
-          <?php
-        /*$categories = get_all_categories();
-        foreach($categories as $categorie):
-        ?>
+            <a class="dropdown-item" href="index.php">Toutes les catégories</a>
+        <?php foreach($categories as $categorie): ?>
            <a class="dropdown-item" href="index.php?cat=<?= $categorie['id'] ?>"><?= $categorie['name'] ?></a>
-        <?php endforeach; */?>
+        <?php endforeach; ?>
         </div>
       </li>
 
@@ -273,7 +270,7 @@ if (isset($_POST['login'])) {
                 {
                     ?>
                         <a title="Modifier" style="padding:10px 15px;" href="modifier.php?id=<?= $post->getId() ?>" class="btn btn-success text-white mt-5"><i class="far fa-edit mr-2"></i>Modifier</a> 
-                        <a data-toggle="modal" style="padding:10px 15px;" data-value="<?= $post->getId() ?>" class="btnDelete btn btn-danger mt-5" data-target="#centralModalDanger"><i class="fas fa-trash-alt mr-2"></i>Supprimer</a>
+                        <a style="padding:10px 15px;" href="index.php?del=<?= $post->getId() ?>" class="btn btn-danger mt-5"><i class="fas fa-trash-alt mr-2"></i>Supprimer</a>
                     <?php
                 }
                 ?>
@@ -329,16 +326,6 @@ if (isset($_POST['login'])) {
             </div>
 
 
-
-    <script>
-
-for (var i=0; i< document.getElementsByClassName('btnDelete').length; i++)
-{
-    document.getElementsByClassName('btnDelete')[i].addEventListener('click', function() {
-        document.getElementById('btnHrefSupprimer').href = 'index.php?del=' + this.dataset.value;
-    })
-}
-</script>
 
 
 
@@ -425,39 +412,20 @@ for (var i=0; i< document.getElementsByClassName('btnDelete').length; i++)
 
 
 
-<!-- Central Modal Medium Danger -->
-<div class="modal fade" id="centralModalDanger" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-aria-hidden="true">
-<div class="modal-dialog modal-notify modal-danger" role="document">
-<!--Content-->
-<div class="modal-content">
-<!--Header-->
-<div class="modal-header">
-<p class="heading lead">Supprimer</p>
 
-<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-  <span aria-hidden="true" class="white-text">&times;</span>
-</button>
-</div>
 
-<!--Body-->
-<div class="modal-body">
-<div class="text-center">
-  <i class="far fa-times-circle fa-4x mb-3 animated rotateIn mt-4"></i>
-  <p class="mt-3">Êtes vous sûr de vouloir supprimer ce post ?</p>
-</div>
-</div>
 
-<!--Footer-->
-<div class="modal-footer justify-content-center">
-<a id="btnHrefSupprimer" href="" type="button" class="btn btn-danger">Supprimer</a>
-<a type="button" class="btn btn-outline-danger waves-effect" data-dismiss="modal">Non merci</a>
-</div>
-</div>
-<!--/.Content-->
-</div>
-</div>
-<!-- Central Modal Medium Danger-->
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!-- Footer -->
@@ -493,6 +461,11 @@ aria-hidden="true">
     <script src="js/ajax.js"></script>
     <script src="js/script.js"></script>
 -->
+<script>
+$("#sideModalTLInfo").on('shown.bs.modal', function(){
+   alert("Hello World!");
+});
+</script>
 
 </body>
 </html>

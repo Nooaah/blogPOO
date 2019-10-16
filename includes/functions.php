@@ -2,25 +2,10 @@
 
 require_once 'classes/Post.php';
 require_once 'classes/User.php';
+require_once 'classes/Categorie.php';
 require_once 'tables/PostTable.php';
 require_once 'tables/UsersTable.php';
 require_once 'tables/CategoriesTable.php';
-
-function retrieve_categorie_by_id($id)
-{
-    global $db;
-    $ins = $db->prepare('SELECT * FROM categories WHERE id = ?');
-    $ins->execute(array($id));
-    $ins = $ins->fetch();
-    return $ins['name']; 
-}
-
-function add_view($id)
-{
-    global $db;
-    $up = $db->prepare('UPDATE posts SET views = views + 1 WHERE id = ?');
-    $up->execute(array($id));
-}
 
 function retrieve_user($id)
 {

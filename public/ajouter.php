@@ -8,6 +8,9 @@ if (empty($_SESSION['id']))
     header('location:index.php');
 }
 
+$cat = new CategoriesTable();
+$categories = $cat->all();
+
 
 if (isset($_POST['submitPost']))
 {
@@ -114,13 +117,9 @@ if (isset($_POST['submitPost']))
           aria-haspopup="true" aria-expanded="false">Catégories</a>
         <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
         <a class="dropdown-item" href="index.php">Toutes les catégories</a>
-            <?php
-            /*
-            $categories = get_all_categories();
-            foreach($categories as $categorie):
-            ?>
-            <a class="dropdown-item" href="index.php?cat=<?= $categorie['id'] ?>"><?= $categorie['name'] ?></a>
-            <?php endforeach; */ ?>
+            <?php foreach($categories as $categorie): ?>
+                <a class="dropdown-item" href="index.php?cat=<?= $categorie['id'] ?>"><?= $categorie['name'] ?></a>
+            <?php endforeach; ?>
             
         </div>
       </li>
@@ -138,9 +137,6 @@ if (isset($_POST['submitPost']))
 
     <form class="form-inline" action="" method="POST">
         <div class="md-form my-0">
-        <!--
-            <input class="form-control mr-sm-2" type="text" id="rechercher" name="rechercher" placeholder="Rechercher" aria-label="Rechercher">
-        -->
         <?php
 if (isset($_SESSION['id'])) {
     ?>
@@ -156,15 +152,6 @@ if (isset($_SESSION['id'])) {
 
 </nav>
 <!--/.Navbar-->
-
-
-
-
-
-
-
-
-
 
 
 
@@ -199,16 +186,9 @@ if (isset($_SESSION['id'])) {
             </div>
             <div class="col-md-3 pt-4">
                 <select id="categorie" name="categorie" class="browser-default custom-select">
-                    <?php
-                    /*
-                        foreach (get_all_categories() as $categorie):
-                    ?>
-                        <option value="<?= get_categorie_id_by_name($categorie['name']) ?>"><?= $categorie['name'] ?></option>
-                    <?php
-                        endforeach;
-                        */
-                        
-                    ?>
+                    <?php foreach ($categories as $categorie): ?>
+                        <option value="<?= $cat->get_categorie_id_by_name($categorie['name']) ?>"><?= $categorie['name'] ?></option>
+                    <?php endforeach; ?>
                         <option value="1">TECH</option>
 
                 </select>
