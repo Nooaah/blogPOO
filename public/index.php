@@ -15,6 +15,7 @@ $posts = $pt->all();
 
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
