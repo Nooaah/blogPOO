@@ -52,6 +52,13 @@ class PostTable
         $sth->execute(array($id));
         return $sth->fetchAll();
     }
+    public function get_posts_by_user($id)
+    {
+        global $db;
+        $getByCat = $db->prepare('SELECT * FROM posts WHERE id_user = ?');
+        $getByCat->execute(array($id));
+        return $getByCat->fetchAll();
+    }
 
     //Update post
     public function update(Post $post)
@@ -84,6 +91,15 @@ class PostTable
         if (!$sth) {
             throw new Exception("Error during adding view with the table {$this->table}");
         }
+    }
+
+    public function get_user_by_mail_and_password($mail, $password)
+    {
+        global $db;
+        $password = sha1($password);
+        $get = $db->prepare('SELECT * FROM users WHERE mail = ? AND password = ?');
+        $get->execute(array($mail, $password));
+        return $get;
     }
 
     public function get_most_famous_posts()

@@ -13,6 +13,9 @@ if (isset($_GET['id']))
     
     $us = new UsersTable();
     $user = $us->get($post->getIdUser());
+
+    $commentaire = new CommentairesTable();
+    $com = $commentaire->all($post);
 }
 else
 {
@@ -24,9 +27,15 @@ $categories = $cat->all();
 
 if (isset($_POST['commentaire']))
 {
-    $commentaire = htmlspecialchars($_POST['commentaire']);
+    $newcomment = htmlspecialchars($_POST['commentaire']);
 
-    add_comment($getid, $_SESSION['id'], $commentaire);
+    //add_comment($getid, $_SESSION['id'], $commentaire);
+
+    $com = new Commentaire();
+    $com->setUserId($_SESSION['id']);
+    $com->setIdPost($getid);
+    $com->setContent($newcomment);
+    $commentaire->create($com);
 
     header('location:article.php?id='.$getid.'#commentaires');
 }
@@ -36,7 +45,7 @@ if (isset($_POST['login'])) {
         $mail = htmlspecialchars($_POST['mail']);
         $password = htmlspecialchars($_POST['password']);
 
-        $requser = get_user_by_mail_and_password($mail, $password);
+        $requser = $pt->get_user_by_mail_and_password($mail, $password);
 
         $nbUsers = $requser->rowcount();
 
@@ -334,7 +343,7 @@ if (isset($_POST['login'])) {
             <hr>
 
             <?php
-            $coms = get_com_by_id($getid);
+            $coms = $commentaire->get_com_by_id($getid);
             $nbCom = $coms->rowcount();
             if ($nbCom == 0)
             {
@@ -345,7 +354,7 @@ if (isset($_POST['login'])) {
                 ?>
                     <?php
                     foreach($coms as $com):
-                        $cuser = retrieve_user($com['id_user']);
+                        $cuser = $us->retrieve_user($com['id_user']);
                         ?>
                         <div class="row pt-3">
                             <div class="col-md-1 mb-5">

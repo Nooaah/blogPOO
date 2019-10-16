@@ -15,10 +15,9 @@ class UsersTable
     public function create(User $user)
     {
         $sth = $this->db->prepare("INSERT INTO {$this->table} (pseudo, password, image, mail) VALUES (?, ?, ?, ?)");
-        $sth->execute(array($user->getPseudo(),$user->getPassword(),$user->getImage(),$user->getEmail()));
-        $result = $sth->execute();
+        $sth->execute(array($user->getPseudo(),$user->getPassword(),$user->getImage(),$user->getMail()));
 
-        if (!$result) {
+        if (!$sth) {
             throw new Exception("Error during creation with the table {$this->table}");
         }
     }
@@ -44,15 +43,21 @@ class UsersTable
         
         return $pt;
     }
+    public function retrieve_user($id)
+    {
+        global $db;
+        $get = $db->prepare('SELECT * FROM users WHERE id = ?');
+        $get->execute(array($id));
+        return $get->fetch();
+    }
 
     //Update User
-    public function update(Post $post): void
+    public function update(User $user): void
     {
-        $sth = $this->db->prepare("UPDATE {$this->table} SET title = ? AND content = ? WHERE id = ?");
-        $sth->execute(array($post->getTitle(), $post->getContent()));
-        $result = $sth->execute();
+        $sth = $this->db->prepare("UPDATE {$this->table} SET pseudo = ? WHERE id = ?");
+        $sth->execute(array($user->getPseudo(), $user->getId()));
 
-        if (!$result) {
+        if (!$rsthesult) {
             throw new Exception("Error during updating with the table {$this->table}");
         }
     }
@@ -63,10 +68,9 @@ class UsersTable
         $sth = $this->db->prepare("DELETE FROM {$this->table} id = ?");
         $sth->execute(array($user->getID()));
 
-        if (!$result) {
+        if (!$sth) {
             throw new Exception("Error during deleting with the table {$this->table}");
         }    
     }
-
 
 }

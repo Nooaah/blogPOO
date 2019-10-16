@@ -15,6 +15,9 @@ else
     $getid = intval($_GET['id']);
 }
 
+$us = new UsersTable();
+$user = $us->get($getid);
+
 ?>
 
 
@@ -84,12 +87,9 @@ else
           aria-haspopup="true" aria-expanded="false">Catégories</a>
         <div class="dropdown-menu dropdown-primary" aria-labelledby="navbarDropdownMenuLink">
           <a class="dropdown-item" href="index.php">Toutes les catégories</a>
-          <?php
-        $categories = get_all_categories();
-        foreach($categories as $categorie):
-        ?>
+          <?php foreach($categories as $categorie): ?>
            <a class="dropdown-item" href="index.php?cat=<?= $categorie['id'] ?>"><?= $categorie['name'] ?></a>
-        <?php endforeach; ?>
+            <?php endforeach; ?>
         </div>
       </li>
 
@@ -148,11 +148,6 @@ else
 
 
 
-
-
-
-
-
 <form action="" method="POST">
 <div class="modal fade" id="modalLoginForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
   aria-hidden="true">
@@ -188,10 +183,8 @@ else
 </form>
 
 
-
-
 <?php
-$userinfo = retrieve_user($getid);
+$userinfo = $us->retrieve_user($getid);
 ?>
 
 
@@ -225,16 +218,19 @@ $userinfo = retrieve_user($getid);
                     </thead>
                     <tbody>
                     <?php
-                    $posts = get_posts_by_user($getid);
+                    $pt = new PostTable();
+                    $posts = $pt->get_posts_by_user($getid);
+
+                    $cat = new CategoriesTable();
                     foreach($posts as $post):
                     
                     ?>
                             <tr>
                                 <th><a href="article.php?id=<?= $post['id'] ?>"><?= $post['title'] ?></a></th>
-                                <th><?= retrieve_categorie_by_id($post['categorie']) ?></th>
+                                <th><?= $cat->get_categorie_by_id($post['categorie']) ?></th>
                                 <th>
                                     <?php
-                                    if ($userinfo['id'] == $_SESSION['id']) {
+                                    if ($post['id_user'] == $_SESSION['id']) {
                                     ?>
                                         <a title="Modifier" href="modifier.php?id=<?= $post['id'] ?>"><i style="color:green;" class="fas fa-pencil-alt ml-3"></i></a>
                                     <?php
@@ -251,20 +247,12 @@ $userinfo = retrieve_user($getid);
 
                         </tbody>
                     </table>
-
-
-
                 </div>
             </div>
 
         </div>
     </div>
 </div>
-
-
-
-
-
 
 
 
@@ -280,8 +268,6 @@ $userinfo = retrieve_user($getid);
 
 </footer>
 <!-- Footer -->
-
-
 
 
 

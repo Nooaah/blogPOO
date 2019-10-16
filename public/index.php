@@ -27,12 +27,30 @@ if (isset($_GET['del']))
 }
 
 
+if (isset($_POST['pseudoRegister']) && isset($_POST['emailRegister']) && isset($_POST['passwordRegister']))
+{
+    $pseudo = htmlspecialchars($_POST['pseudoRegister']);
+    $email = htmlspecialchars($_POST['emailRegister']);
+    $mdp = sha1(htmlspecialchars($_POST['passwordRegister']));
+    
+    $us = new UsersTable();
+    $userinfo = new User();
+    $userinfo->setPseudo($pseudo);
+    $userinfo->setMail($email);
+    $userinfo->setPassword($mdp);
+    $userinfo->setImage('https://forums.mfgg.net/uploads/avatars/avatar_239.png?dateline=1516570676');
+    $us->create($userinfo);
+
+    
+}
+
+
 if (isset($_POST['login'])) {
     if (!empty($_POST['mail']) && !empty($_POST['password'])) {
         $mail = htmlspecialchars($_POST['mail']);
         $password = htmlspecialchars($_POST['password']);
 
-        $requser = get_user_by_mail_and_password($mail, $password);
+        $requser = $pt->get_user_by_mail_and_password($mail, $password);
 
         $nbUsers = $requser->rowcount();
 
