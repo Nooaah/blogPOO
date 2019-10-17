@@ -92,16 +92,7 @@ class PostTable
             throw new Exception("Error during adding view with the table {$this->table}");
         }
     }
-
-    public function get_user_by_mail_and_password($mail, $password)
-    {
-        global $db;
-        $password = sha1($password);
-        $get = $db->prepare('SELECT * FROM users WHERE mail = ? AND password = ?');
-        $get->execute(array($mail, $password));
-        return $get;
-    }
-
+    
     public function get_most_famous_posts()
     {
         $sth = $this->db->query("SELECT * FROM {$this->table} ORDER BY views DESC LIMIT 3");

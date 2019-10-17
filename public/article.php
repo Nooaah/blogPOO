@@ -1,5 +1,6 @@
 <?
 session_start();
+error_reporting();
 require_once '../includes/config.php';
 
 if (isset($_GET['id']))
@@ -45,7 +46,12 @@ if (isset($_POST['login'])) {
         $mail = htmlspecialchars($_POST['mail']);
         $password = htmlspecialchars($_POST['password']);
 
-        $requser = $pt->get_user_by_mail_and_password($mail, $password);
+        $user = new User();
+        $user->setMail($mail);
+        $user->setPassword(sha1($password));
+
+        $userRequest = new UsersTable();
+        $requser = $userRequest->get_user_by_mail_and_password($user);
 
         $nbUsers = $requser->rowcount();
 
@@ -55,6 +61,7 @@ if (isset($_POST['login'])) {
             $_SESSION['pseudo'] = $requser['pseudo'];
             $_SESSION['mail'] = $requser['mail'];
             $_SESSION['password'] = $requser['password'];
+            header('location:article.php?id='.$getid);
         }
     }
 }

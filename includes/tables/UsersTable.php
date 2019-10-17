@@ -73,4 +73,13 @@ class UsersTable
         }    
     }
 
+    //Connexion method
+    public function get_user_by_mail_and_password(User $user)
+    {
+        global $db;
+        $get = $db->prepare('SELECT * FROM users WHERE mail = ? AND password = ?');
+        $get->execute(array($user->getMail(), $user->getPassword()));
+        return $get;
+    }
+
 }

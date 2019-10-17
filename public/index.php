@@ -40,7 +40,6 @@ if (isset($_POST['pseudoRegister']) && isset($_POST['emailRegister']) && isset($
     $userinfo->setPassword($mdp);
     $userinfo->setImage('https://forums.mfgg.net/uploads/avatars/avatar_239.png?dateline=1516570676');
     $us->create($userinfo);
-
     
 }
 
@@ -50,7 +49,12 @@ if (isset($_POST['login'])) {
         $mail = htmlspecialchars($_POST['mail']);
         $password = htmlspecialchars($_POST['password']);
 
-        $requser = $pt->get_user_by_mail_and_password($mail, $password);
+        $user = new User();
+        $user->setMail($mail);
+        $user->setPassword(sha1($password));
+
+        $userRequest = new UsersTable();
+        $requser = $userRequest->get_user_by_mail_and_password($user);
 
         $nbUsers = $requser->rowcount();
 
