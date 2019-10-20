@@ -306,7 +306,6 @@ aria-hidden="true">
 
             <div class="row mt-5">
                 <div class="col-md-4 mt-3 mb-4">
-
                 <!--Zoom effect-->
                 <a href="article.php?id=<?= $thisPost->getID() ?>">
                 <div class="view overlay zoom">
