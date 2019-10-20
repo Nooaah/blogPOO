@@ -300,13 +300,15 @@ aria-hidden="true">
 
 
 ?>
-            <? foreach($posts as $post): ?>
+            <? foreach($posts as $post):
+                $thisPost = $pt->get($post['id']);
+            ?>
 
             <div class="row mt-5">
                 <div class="col-md-4 mt-3 mb-4">
 
                 <!--Zoom effect-->
-                <a href="article.php?id=<?= $post['id'] ?>">
+                <a href="article.php?id=<?= $thisPost->getID() ?>">
                 <div class="view overlay zoom">
                 <img src="<?= $post['image'] ?>" class="img-fluid " alt="zoom">
                 <div class="mask flex-center waves-effect waves-light">
@@ -319,12 +321,12 @@ aria-hidden="true">
 
             <div class="col-md-8">
                     <p style="font-size:19px;" class="mt-2">
-                        <div class="date" style="font-size:13px;"><b><b><?= $cat->get_categorie_by_id($post['categorie']) ?> / </b></b>Le <?= date('d/m/Y à H:i', $post['date']); ?></div>
-                        <h2 class="mb-3"><a style="color:black;" href="article.php?id=<?= $post['id'] ?>"><b><b><?= $post['title'] ?></b></b></a></h2>
+                        <div class="date" style="font-size:13px;"><b><b><?= $cat->get_categorie_by_id($thisPost->getCategorie()) ?> / </b></b>Le <?= date('d/m/Y à H:i', $thisPost->getDate()); ?></div>
+                        <h2 class="mb-3"><a style="color:black;" href="article.php?id=<?= $thisPost->getID() ?>"><b><b><?= $thisPost->getTitle() ?></b></b></a></h2>
                         <?php
-                        $text = $post['content'];
+                        $text = $thisPost->getContent();
                         $text = substr($text, 0, 300);
-                        $text = $text . ' ... <br><a href="article.php?id=' . $post['id'] . '">Lire la suite</a>';
+                        $text = $text . ' ... <br><a href="article.php?id=' . $thisPost->getID() . '">Lire la suite</a>';
                         echo $text;
                        ?>
 
